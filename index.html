@@ -1,0 +1,1324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NEU Library Portal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f4f5ff;
+      --panel: #ffffff;
+      --primary: #f24ba5;
+      --primary-dark: #d8348a;
+      --secondary: #5d5fef;
+      --text: #1f2552;
+      --muted: #7a81a8;
+      --line: #eceefe;
+      --success: #19b37d;
+      --warning: #ffb020;
+      --shadow: 0 20px 60px rgba(69, 71, 130, 0.15);
+      --radius-xl: 28px;
+      --radius-lg: 20px;
+      --radius-md: 14px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background:
+        radial-gradient(circle at top right, rgba(93,95,239,0.10), transparent 24%),
+        radial-gradient(circle at bottom left, rgba(242,75,165,0.10), transparent 22%),
+        var(--bg);
+      color: var(--text);
+    }
+
+    .app-shell {
+      max-width: 1280px;
+      margin: 18px auto;
+      background: var(--panel);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      min-height: calc(100vh - 36px);
+      border: 1px solid rgba(93,95,239,0.08);
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 34px;
+      position: sticky;
+      top: 0;
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(10px);
+      z-index: 20;
+      border-bottom: 1px solid rgba(236,238,254,0.8);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      color: var(--secondary);
+    }
+
+    .brand-mark {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--secondary), var(--primary));
+      box-shadow: 0 0 0 6px rgba(93,95,239,0.08);
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      gap: 22px;
+      font-size: 14px;
+    }
+
+    .nav a {
+      text-decoration: none;
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    .nav a:hover,
+    .nav a.active { color: var(--secondary); }
+
+    .btn {
+      border: 0;
+      border-radius: 999px;
+      padding: 12px 20px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: 0.2s ease;
+      font-family: inherit;
+    }
+
+    .btn:hover { transform: translateY(-1px); }
+
+    .btn-primary {
+      color: white;
+      background: linear-gradient(135deg, var(--primary), #ff6fc0);
+      box-shadow: 0 12px 24px rgba(242,75,165,0.25);
+    }
+
+    .btn-secondary {
+      color: var(--secondary);
+      background: rgba(93,95,239,0.08);
+    }
+
+    .btn-google {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      color: #1f2937;
+      background: #fff;
+      border: 1px solid #d1d5db;
+      width: 100%;
+    }
+
+    .section { display: none; }
+    .section.active { display: block; }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1.1fr 1fr;
+      gap: 26px;
+      padding: 42px 34px 50px;
+      align-items: center;
+    }
+
+    .eyebrow {
+      color: var(--secondary);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    h1 {
+      font-size: clamp(34px, 5vw, 62px);
+      line-height: 1;
+      margin: 0 0 14px;
+      letter-spacing: -0.04em;
+    }
+
+    .hero p {
+      font-size: 16px;
+      color: var(--muted);
+      line-height: 1.7;
+      max-width: 540px;
+      margin: 0 0 28px;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .illustration {
+      position: relative;
+      min-height: 420px;
+      border-radius: var(--radius-xl);
+      background: linear-gradient(180deg, #fbfbff, #f3f6ff);
+      overflow: hidden;
+      border: 1px solid var(--line);
+    }
+
+    .shape, .book, .person, .lamp, .magnify { position: absolute; }
+    .shape.one {
+      width: 220px; height: 220px; right: -40px; top: -50px;
+      background: rgba(242,75,165,0.08); border-radius: 50%;
+    }
+    .shape.two {
+      width: 180px; height: 180px; left: -50px; bottom: -50px;
+      background: rgba(93,95,239,0.10); border-radius: 50%;
+    }
+
+    .book.stack-left,
+    .book.stack-right {
+      bottom: 55px;
+      width: 72px;
+      border-radius: 10px;
+      box-shadow: 0 10px 20px rgba(93,95,239,0.12);
+    }
+
+    .book.stack-left {
+      left: 34px;
+      height: 140px;
+      background: linear-gradient(180deg, #a2efc9, #62ce9c);
+      border-left: 12px solid #44b47f;
+    }
+
+    .book.stack-right {
+      right: 34px;
+      height: 120px;
+      background: linear-gradient(180deg, #7c86ff, #5d5fef);
+      border-left: 12px solid #4043d5;
+    }
+
+    .open-book {
+      position: absolute;
+      left: 50%; top: 57%;
+      transform: translate(-50%, -50%);
+      width: 300px; height: 190px;
+    }
+
+    .open-book::before,
+    .open-book::after {
+      content: "";
+      position: absolute;
+      width: 48%; height: 100%;
+      background: #fffbe9;
+      border: 4px solid #f0d989;
+      border-bottom-width: 12px;
+      border-radius: 12px 12px 18px 18px;
+      box-shadow: 0 16px 26px rgba(0,0,0,0.08);
+    }
+
+    .open-book::before {
+      left: 0;
+      transform: perspective(500px) rotateY(16deg);
+      transform-origin: right center;
+    }
+
+    .open-book::after {
+      right: 0;
+      transform: perspective(500px) rotateY(-16deg);
+      transform-origin: left center;
+    }
+
+    .lamp {
+      top: 62px; left: 50%; transform: translateX(-50%);
+      width: 90px; height: 120px;
+    }
+
+    .lamp .bulb {
+      width: 58px; height: 58px; margin: 0 auto;
+      border-radius: 50%;
+      background: radial-gradient(circle, #ffe36a, #ffc737);
+      box-shadow: 0 0 30px rgba(255,199,55,0.48);
+    }
+
+    .lamp .base {
+      width: 24px; height: 42px; margin: 6px auto 0;
+      background: #6772e5; border-radius: 10px;
+      position: relative;
+    }
+
+    .lamp .base::after {
+      content: "";
+      position: absolute; left: 50%; bottom: -10px; transform: translateX(-50%);
+      width: 50px; height: 10px; border-radius: 999px; background: #4853c8;
+    }
+
+    .magnify {
+      right: 78px; top: 168px;
+      width: 74px; height: 74px;
+      border: 8px solid #263159;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.25);
+    }
+
+    .magnify::after {
+      content: "";
+      position: absolute;
+      width: 18px; height: 70px;
+      background: #263159;
+      bottom: -52px; right: 4px;
+      transform: rotate(-35deg);
+      border-radius: 999px;
+    }
+
+    .person {
+      bottom: 44px;
+      width: 56px;
+      height: 126px;
+    }
+
+    .person .head {
+      width: 24px; height: 24px;
+      border-radius: 50%;
+      background: #f4b183;
+      position: absolute; left: 50%; transform: translateX(-50%); top: 0;
+    }
+
+    .person .body {
+      width: 34px; height: 48px;
+      border-radius: 12px;
+      position: absolute; left: 50%; top: 26px; transform: translateX(-50%);
+    }
+
+    .person .leg,
+    .person .leg2,
+    .person .arm,
+    .person .arm2 {
+      position: absolute;
+      background: #263159;
+      border-radius: 999px;
+    }
+
+    .person .leg { width: 10px; height: 42px; left: 16px; top: 72px; transform: rotate(12deg); }
+    .person .leg2 { width: 10px; height: 42px; left: 30px; top: 72px; transform: rotate(-12deg); }
+    .person .arm { width: 9px; height: 34px; left: 10px; top: 40px; transform: rotate(28deg); }
+    .person .arm2 { width: 9px; height: 34px; right: 10px; top: 40px; transform: rotate(-28deg); }
+
+    .person.left { left: 110px; }
+    .person.left .body { background: #7f89ff; }
+    .person.right { right: 128px; }
+    .person.right .body { background: #ff6fb3; }
+
+    .panel {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      box-shadow: 0 12px 30px rgba(80, 86, 160, 0.08);
+    }
+
+    .login-wrap {
+      display: grid;
+      grid-template-columns: 0.95fr 1.05fr;
+      min-height: calc(100vh - 100px);
+    }
+
+    .login-art {
+      background: linear-gradient(180deg, #f8f8ff, #eef1ff);
+      padding: 42px;
+      border-right: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .login-card {
+      max-width: 430px;
+      margin: 40px auto;
+      align-self: center;
+    }
+
+    .login-card h2,
+    .dashboard-head h2,
+    .visitor-form h2 {
+      margin: 0 0 10px;
+      font-size: 32px;
+      letter-spacing: -0.03em;
+    }
+
+    .muted { color: var(--muted); }
+
+    .form-grid {
+      display: grid;
+      gap: 14px;
+      margin-top: 22px;
+    }
+
+    label {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text);
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    input, select {
+      width: 100%;
+      border: 1px solid #dfe4ff;
+      border-radius: 14px;
+      padding: 14px 14px;
+      font: inherit;
+      outline: none;
+      background: #fbfcff;
+    }
+
+    input:focus, select:focus {
+      border-color: #8d95ff;
+      box-shadow: 0 0 0 4px rgba(93,95,239,0.10);
+      background: #fff;
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--muted);
+      font-size: 12px;
+      margin: 10px 0;
+    }
+
+    .divider::before,
+    .divider::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: var(--line);
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(93,95,239,0.10);
+      color: var(--secondary);
+      font-size: 12px;
+      font-weight: 700;
+      margin-top: 14px;
+    }
+
+    .login-note {
+      font-size: 13px;
+      line-height: 1.7;
+      color: var(--muted);
+      background: #f8f9ff;
+      border: 1px dashed #d7dcff;
+      padding: 14px;
+      border-radius: 14px;
+    }
+
+    .dashboard {
+      padding: 28px 34px 36px;
+    }
+
+    .dashboard-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 18px;
+      margin-bottom: 22px;
+      flex-wrap: wrap;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 18px;
+      margin-bottom: 24px;
+    }
+
+    .stat-card {
+      background: linear-gradient(180deg, #ffffff, #f8f9ff);
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      padding: 20px;
+      box-shadow: 0 12px 30px rgba(80, 86, 160, 0.08);
+    }
+
+    .stat-label {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    .stat-value {
+      font-size: 32px;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      margin-bottom: 8px;
+    }
+
+    .stat-sub {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .filters {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+
+    .filters .actions {
+      display: flex;
+      gap: 10px;
+      align-items: end;
+    }
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 18px;
+      align-items: start;
+    }
+
+    .chart-area {
+      display: grid;
+      gap: 16px;
+    }
+
+    .bar-chart {
+      display: flex;
+      align-items: end;
+      gap: 16px;
+      height: 260px;
+      padding: 12px 6px 0;
+    }
+
+    .bar-wrap {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: end;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .bar {
+      width: 100%;
+      max-width: 56px;
+      border-radius: 18px 18px 8px 8px;
+      background: linear-gradient(180deg, #7c86ff, #5d5fef);
+      box-shadow: 0 12px 18px rgba(93,95,239,0.18);
+      position: relative;
+    }
+
+    .bar.alt {
+      background: linear-gradient(180deg, #ff7cbf, #f24ba5);
+      box-shadow: 0 12px 18px rgba(242,75,165,0.18);
+    }
+
+    .bar strong {
+      position: absolute;
+      top: -28px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 12px;
+      color: var(--secondary);
+      white-space: nowrap;
+    }
+
+    .bar-wrap span {
+      color: var(--muted);
+      font-size: 12px;
+      text-align: center;
+    }
+
+    .mini-list {
+      display: grid;
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .mini-item {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: center;
+      padding: 14px 16px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: #fafbff;
+    }
+
+    .badge {
+      padding: 7px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .badge.success { background: rgba(25,179,125,0.12); color: var(--success); }
+    .badge.warning { background: rgba(255,176,32,0.14); color: #a66a00; }
+    .badge.primary { background: rgba(93,95,239,0.12); color: var(--secondary); }
+
+    .visitor-page {
+      padding: 36px 34px 46px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .visitor-form {
+      display: grid;
+      gap: 18px;
+    }
+
+    .visitor-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .welcome-box {
+      margin-top: 18px;
+      padding: 20px;
+      border-radius: 20px;
+      background: linear-gradient(135deg, rgba(25,179,125,0.10), rgba(93,95,239,0.08));
+      border: 1px solid rgba(25,179,125,0.18);
+      display: none;
+      font-weight: 700;
+      color: #15614a;
+    }
+
+    .footer-note {
+      padding: 0 34px 30px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    @media (max-width: 1100px) {
+      .hero,
+      .login-wrap,
+      .card-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .stats-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .filters { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 780px) {
+      .topbar {
+        padding: 16px 18px;
+        flex-wrap: wrap;
+        gap: 14px;
+      }
+
+      .nav { gap: 14px; flex-wrap: wrap; }
+      .hero,
+      .dashboard,
+      .visitor-page,
+      .login-art { padding: 20px; }
+
+      .stats-grid,
+      .filters,
+      .visitor-grid { grid-template-columns: 1fr; }
+      .filters .actions { flex-direction: column; }
+      .illustration { min-height: 320px; }
+      .open-book { width: 220px; height: 140px; }
+      .magnify { right: 38px; top: 138px; transform: scale(0.8); }
+      .person.left { left: 62px; }
+      .person.right { right: 86px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-mark"></span>
+        <span>NEU Library</span>
+      </div>
+      <nav class="nav">
+        <a href="#home" class="active" onclick="showSection('home', event)">Home</a>
+        <a href="#visitor" onclick="showSection('visitor', event)">Visitor</a>
+        <a href="#login" onclick="showSection('login', event)">Admin</a>
+        <button class="btn btn-primary" onclick="showSection('visitor')">Sign In</button>
+      </nav>
+    </header>
+
+    <main>
+      <section id="home" class="section active">
+        <div class="hero">
+          <div>
+            <div class="eyebrow">Online Library</div>
+            <h1>Welcome to NEU Library!</h1>
+            <p>Welcome to NEU Library!</p>
+            <div class="hero-actions">
+              <button class="btn btn-primary" onclick="showSection('visitor')">Visitor Access</button>
+              <button class="btn btn-secondary" onclick="showSection('login')">Admin Statistics</button>
+            </div>
+          </div>
+
+          <div class="illustration">
+            <div class="shape one"></div>
+            <div class="shape two"></div>
+            <div class="book stack-left"></div>
+            <div class="book stack-right"></div>
+            <div class="open-book"></div>
+            <div class="lamp">
+              <div class="bulb"></div>
+              <div class="base"></div>
+            </div>
+            <div class="magnify"></div>
+            <div class="person left">
+              <div class="head"></div>
+              <div class="body"></div>
+              <div class="arm"></div>
+              <div class="arm2"></div>
+              <div class="leg"></div>
+              <div class="leg2"></div>
+            </div>
+            <div class="person right">
+              <div class="head"></div>
+              <div class="body"></div>
+              <div class="arm"></div>
+              <div class="arm2"></div>
+              <div class="leg"></div>
+              <div class="leg2"></div>
+            </div>
+          </div>
+        </div>
+        <div class="footer-note">Prototype only. This version runs in a single file and uses client-side validation.</div>
+      </section>
+
+      <section id="visitor" class="section">
+        <div class="visitor-page">
+          <div class="panel">
+            <div class="visitor-form">
+              <div>
+                <div class="eyebrow">Regular User</div>
+                <h2>Welcome to NEU Library!</h2>
+                <p class="muted">Welcome to NEU Library!</p>
+              </div>
+
+              <div class="visitor-grid">
+                <div>
+                  <label for="visitorName">Full Name</label>
+                  <input type="text" id="visitorName" placeholder="Enter full name" />
+                </div>
+                <div>
+                  <label for="visitorEmail">NEU Email</label>
+                  <input type="email" id="visitorEmail" placeholder="example@neu.edu.ph" />
+                </div>
+                <div>
+                  <label for="visitorCollege">Course</label>
+                  <select id="visitorCollege">
+                    <option value="">Select course</option>
+                    <optgroup label="Engineering">
+                      <option>BS Civil Engineering</option>
+                      <option>BS Mechanical Engineering</option>
+                      <option>BS Electrical Engineering</option>
+                      <option>BS Electronics Engineering</option>
+                      <option>BS Industrial Engineering</option>
+                      <option>BS Computer Engineering</option>
+                    </optgroup>
+                    <optgroup label="Information Technology">
+                      <option>BS Information Technology</option>
+                      <option>BS Computer Science</option>
+                      <option>BS Information Systems</option>
+                    </optgroup>
+                    <optgroup label="Business">
+                      <option>BS Business Administration</option>
+                      <option>BS Accountancy</option>
+                      <option>BS Entrepreneurship</option>
+                      <option>BS Marketing Management</option>
+                      <option>BS Financial Management</option>
+                    </optgroup>
+                    <optgroup label="Arts and Sciences">
+                      <option>BA Communication</option>
+                      <option>BA Political Science</option>
+                      <option>BA Psychology</option>
+                      <option>BS Biology</option>
+                      <option>BS Mathematics</option>
+                    </optgroup>
+                    <optgroup label="Education">
+                      <option>Bachelor of Elementary Education</option>
+                      <option>Bachelor of Secondary Education</option>
+                      <option>Bachelor of Physical Education</option>
+                    </optgroup>
+                    <optgroup label="Health Sciences">
+                      <option>BS Nursing</option>
+                      <option>BS Medical Technology</option>
+                      <option>BS Pharmacy</option>
+                      <option>BS Radiologic Technology</option>
+                    </optgroup>
+                    <optgroup label="Hospitality">
+                      <option>BS Hospitality Management</option>
+                      <option>BS Tourism Management</option>
+                    </optgroup>
+                    <optgroup label="Senior High">
+                      <option>STEM</option>
+                      <option>ABM</option>
+                      <option>HUMSS</option>
+                      <option>TVL</option>
+                    </optgroup>
+                  </select>
+                </div>
+                <div>
+                  <label for="visitorReason">Reason for Visit</label>
+                  <select id="visitorReason">
+                    <option value="">Select reason</option>
+                    <option>Study</option>
+                    <option>Research</option>
+                    <option>Borrow Books</option>
+                    <option>Return Books</option>
+                    <option>Computer Use</option>
+                  </select>
+                </div>
+                <div>
+                  <label for="visitorEmployee">Employee Status</label>
+                  <select id="visitorEmployee">
+                    <option value="">Select status</option>
+                    <option value="No">Student / Non-employee</option>
+                    <option value="Teacher">Teacher</option>
+                    <option value="Staff">Staff</option>
+                  </select>
+                </div>
+                <div>
+                  <label for="visitDate">Visit Date</label>
+                  <input type="date" id="visitDate" />
+                </div>
+              </div>
+
+              <div style="display:flex; gap:12px; flex-wrap:wrap;">
+                <button class="btn btn-primary" onclick="validateVisitor()">Validate Visitor</button>
+                <button class="btn btn-secondary" onclick="seedDemoVisitor()">Load Demo Data</button>
+              </div>
+
+              <div id="welcomeBox" class="welcome-box">Welcome to NEU Library!</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="login" class="section">
+        <div class="login-wrap">
+          <div class="login-art">
+            <div style="max-width: 520px;">
+              <div class="tag">Google Account Only</div>
+              <h2 style="font-size:42px; line-height:1.05; margin:18px 0 12px; letter-spacing:-0.04em;">Admin Access for Visitor Statistics</h2>
+              <p class="muted" style="line-height:1.8;">Admin login is restricted to one email in this prototype.</p>
+              <div class="illustration" style="min-height:300px; margin-top:24px;">
+                <div class="shape one"></div>
+                <div class="shape two"></div>
+                <div class="open-book" style="top:58%;"></div>
+                <div class="lamp"><div class="bulb"></div><div class="base"></div></div>
+                <div class="magnify" style="top:126px; right:54px;"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="login-card">
+            <div class="panel">
+              <div class="eyebrow">Admin</div>
+              <h2>Sign in</h2>
+              <p class="muted">Use your admin email to open the statistics dashboard.</p>
+
+              <div class="form-grid">
+                <div>
+                  <label for="adminEmail">Admin Email</label>
+                  <input type="email" id="adminEmail" placeholder="example@neu.edu.ph" />
+                </div>
+
+                <button class="btn btn-google" onclick="loginAdmin()">
+                  <span style="font-size:18px;">G</span>
+                  Continue with Google
+                </button>
+
+                <div class="divider">or</div>
+
+                <button class="btn btn-primary" onclick="loginAdmin()">Enter Dashboard</button>
+
+                <div class="login-note">
+                  Only <strong>jcesperanza@neu.edu.ph</strong> is allowed for admin login.<br>
+                  Walang password dito dahil pure frontend lang ito.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="admin" class="section">
+        <div class="dashboard">
+          <div class="dashboard-head">
+            <div>
+              <div class="eyebrow">Admin Dashboard</div>
+              <h2>Visitor Statistics</h2>
+              <p class="muted">View statistics by day, week, or custom date range. Filter by reason, course, and employee status.</p>
+            </div>
+            <div style="display:flex; gap:10px; flex-wrap:wrap;">
+              <button class="btn btn-secondary" onclick="setQuickRange('day')">Today</button>
+              <button class="btn btn-secondary" onclick="setQuickRange('week')">This Week</button>
+              <button class="btn btn-primary" onclick="logoutAdmin()">Logout</button>
+            </div>
+          </div>
+
+          <div class="panel" style="margin-bottom:20px;">
+            <div class="filters">
+              <div>
+                <label for="rangeType">View By</label>
+                <select id="rangeType" onchange="toggleDateRange()">
+                  <option value="day">Day</option>
+                  <option value="week">Week</option>
+                  <option value="custom">Custom Date Range</option>
+                </select>
+              </div>
+              <div id="singleDateWrap">
+                <label for="singleDate">Chosen Date</label>
+                <input type="date" id="singleDate" />
+              </div>
+              <div id="startDateWrap" style="display:none;">
+                <label for="startDate">Start Date</label>
+                <input type="date" id="startDate" />
+              </div>
+              <div id="endDateWrap" style="display:none;">
+                <label for="endDate">End Date</label>
+                <input type="date" id="endDate" />
+              </div>
+              <div>
+                <label for="filterReason">Reason</label>
+                <select id="filterReason">
+                  <option value="all">All</option>
+                  <option>Study</option>
+                  <option>Research</option>
+                  <option>Borrow Books</option>
+                  <option>Return Books</option>
+                  <option>Computer Use</option>
+                </select>
+              </div>
+              <div>
+                <label for="filterCollege">Course</label>
+                <select id="filterCollege">
+                  <option value="all">All</option>
+                  <option>BS Civil Engineering</option>
+                  <option>BS Mechanical Engineering</option>
+                  <option>BS Electrical Engineering</option>
+                  <option>BS Electronics Engineering</option>
+                  <option>BS Industrial Engineering</option>
+                  <option>BS Computer Engineering</option>
+                  <option>BS Information Technology</option>
+                  <option>BS Computer Science</option>
+                  <option>BS Information Systems</option>
+                  <option>BS Business Administration</option>
+                  <option>BS Accountancy</option>
+                  <option>BS Entrepreneurship</option>
+                  <option>BS Marketing Management</option>
+                  <option>BS Financial Management</option>
+                  <option>BA Communication</option>
+                  <option>BA Political Science</option>
+                  <option>BA Psychology</option>
+                  <option>BS Biology</option>
+                  <option>BS Mathematics</option>
+                  <option>Bachelor of Elementary Education</option>
+                  <option>Bachelor of Secondary Education</option>
+                  <option>Bachelor of Physical Education</option>
+                  <option>BS Nursing</option>
+                  <option>BS Medical Technology</option>
+                  <option>BS Pharmacy</option>
+                  <option>BS Radiologic Technology</option>
+                  <option>BS Hospitality Management</option>
+                  <option>BS Tourism Management</option>
+                  <option>STEM</option>
+                  <option>ABM</option>
+                  <option>HUMSS</option>
+                  <option>TVL</option>
+                </select>
+              </div>
+              <div>
+                <label for="filterEmployee">Employee</label>
+                <select id="filterEmployee">
+                  <option value="all">All</option>
+                  <option value="No">Student / Non-employee</option>
+                  <option value="Teacher">Teacher</option>
+                  <option value="Staff">Staff</option>
+                </select>
+              </div>
+              <div class="actions">
+                <button class="btn btn-primary" style="width:100%;" onclick="renderDashboard()">Apply Filters</button>
+                <button class="btn btn-secondary" style="width:100%;" onclick="resetFilters()">Reset</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-label">Total Visitors</div>
+              <div class="stat-value" id="totalVisitors">0</div>
+              <div class="stat-sub">Filtered library visits</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Students / Non-employee</div>
+              <div class="stat-value" id="studentVisitors">0</div>
+              <div class="stat-sub">Visitors marked as non-employee</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Teachers</div>
+              <div class="stat-value" id="teacherVisitors">0</div>
+              <div class="stat-sub">Employee type: Teacher</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Staff</div>
+              <div class="stat-value" id="staffVisitors">0</div>
+              <div class="stat-sub">Employee type: Staff</div>
+            </div>
+          </div>
+
+          <div class="card-grid">
+            <div class="panel chart-area">
+              <div>
+                <h3 style="margin:0 0 4px;">Visits Overview</h3>
+                <p class="muted" style="margin:0;">Card-style summary for day, week, or custom date range.</p>
+              </div>
+              <div id="barChart" class="bar-chart"></div>
+            </div>
+
+            <div>
+              <div class="panel">
+                <div>
+                  <h3 style="margin:0 0 4px;">Top Breakdown</h3>
+                  <p class="muted" style="margin:0;">Most common reasons and courses from the current filters.</p>
+                </div>
+                <div id="topBreakdown" class="mini-list"></div>
+              </div>
+              <div id="recentLogs" class="panel" style="margin-top:18px;">
+                <h3 style="margin:0 0 10px;">Recent Logs (with Time)</h3>
+                <div id="recentLogsList" class="mini-list"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    function showSection(sectionId, event) {
+      document.querySelectorAll('.section').forEach(section => section.classList.remove('active'));
+      const targetSection = document.getElementById(sectionId);
+      if (targetSection) {
+        targetSection.classList.add('active');
+      }
+
+      document.querySelectorAll('.nav a').forEach(link => link.classList.remove('active'));
+      if (event) {
+        event.preventDefault();
+        if (event.currentTarget && event.currentTarget.tagName === 'A') {
+          event.currentTarget.classList.add('active');
+        }
+      } else {
+        const targetLink = Array.from(document.querySelectorAll('.nav a')).find(a => a.getAttribute('href') === '#' + sectionId);
+        if (targetLink) targetLink.classList.add('active');
+      }
+    }
+
+    const visitorData = [
+      { name: 'Juan Dela Cruz', email: 'juan@email.com', date: '2025-03-17', time: '09:15', reason: 'Study', college: 'BS Computer Science', employee: 'No' },
+      { date: '2025-03-17', time: '10:10', reason: 'Research', college: 'BS Civil Engineering', employee: 'Teacher' },
+      { date: '2025-03-18', time: '08:45', reason: 'Borrow Books', college: 'BS Accountancy', employee: 'No' },
+      { date: '2025-03-18', time: '11:20', reason: 'Study', college: 'BS Information Technology', employee: 'No' },
+      { date: '2025-03-18', time: '01:05', reason: 'Computer Use', college: 'BA Psychology', employee: 'No' },
+      { date: '2025-03-19', time: '09:40', reason: 'Research', college: 'BS Nursing', employee: 'Teacher' },
+      { date: '2025-03-19', time: '02:15', reason: 'Return Books', college: 'BS Electronics Engineering', employee: 'Staff' },
+      { date: '2025-03-19', time: '03:30', reason: 'Study', college: 'STEM', employee: 'No' },
+      { date: '2025-03-20', time: '08:55', reason: 'Borrow Books', college: 'BS Hospitality Management', employee: 'No' },
+      { date: '2025-03-20', time: '10:25', reason: 'Study', college: 'BS Mechanical Engineering', employee: 'No' },
+      { date: '2025-03-20', time: '12:05', reason: 'Computer Use', college: 'BS Computer Engineering', employee: 'Staff' },
+      { date: '2025-03-21', time: '09:50', reason: 'Research', college: 'BS Pharmacy', employee: 'Teacher' },
+      { date: '2025-03-21', time: '01:10', reason: 'Study', college: 'BS Information Systems', employee: 'No' },
+      { date: '2025-03-22', time: '08:20', reason: 'Return Books', college: 'BS Biology', employee: 'No' },
+      { date: '2025-03-22', time: '11:35', reason: 'Study', college: 'BS Business Administration', employee: 'No' },
+      { date: '2025-03-23', time: '02:40', reason: 'Computer Use', college: 'HUMSS', employee: 'Staff' },
+      { date: '2025-03-23', time: '04:10', reason: 'Borrow Books', college: 'BS Tourism Management', employee: 'No' },
+      { date: '2025-03-24', time: '09:00', reason: 'Study', college: 'Bachelor of Secondary Education', employee: 'No' },
+      { date: '2025-03-24', time: '10:45', reason: 'Research', college: 'BS Medical Technology', employee: 'Teacher' },
+      { date: '2025-03-24', time: '01:25', reason: 'Study', college: 'ABM', employee: 'No' }
+    ];
+
+    function validateVisitor() {
+      const name = document.getElementById('visitorName').value.trim();
+      const email = document.getElementById('visitorEmail').value.trim();
+      const college = document.getElementById('visitorCollege').value;
+      const reason = document.getElementById('visitorReason').value;
+      const employee = document.getElementById('visitorEmployee').value;
+      const visitDate = document.getElementById('visitDate').value;
+      const welcomeBox = document.getElementById('welcomeBox');
+
+      if (!name || !email || !college || !reason || !employee || !visitDate) {
+        alert('Please complete all visitor fields.');
+        return;
+      }
+
+      const now = new Date();
+      const time = now.toTimeString().slice(0, 5);
+      visitorData.push({ name, email, date: visitDate, time, reason, college, employee });
+
+      welcomeBox.textContent = 'Welcome to NEU Library!';
+      welcomeBox.style.display = 'block';
+      renderDashboard();
+    }
+
+    function seedDemoVisitor() {
+      document.getElementById('visitorName').value = 'Juan Dela Cruz';
+      document.getElementById('visitorEmail').value = 'example@neu.edu.ph';
+      document.getElementById('visitorCollege').value = 'BS Computer Science';
+      document.getElementById('visitorReason').value = 'Study';
+      document.getElementById('visitorEmployee').value = 'No';
+      document.getElementById('visitDate').value = getToday();
+    }
+
+    function loginAdmin() {
+      const email = document.getElementById('adminEmail').value.trim().toLowerCase();
+      if (email !== 'jcesperanza@neu.edu.ph') {
+        alert('Only jcesperanza@neu.edu.ph is allowed for admin login.');
+        return;
+      }
+      showSection('admin');
+      renderDashboard();
+    }
+
+    function logoutAdmin() {
+      showSection('home');
+    }
+
+    function getToday() {
+      return new Date().toISOString().split('T')[0];
+    }
+
+    function setDefaultDates() {
+      const today = getToday();
+      document.getElementById('singleDate').value = today;
+      document.getElementById('startDate').value = today;
+      document.getElementById('endDate').value = today;
+      document.getElementById('visitDate').value = today;
+    }
+
+    function toggleDateRange() {
+      const type = document.getElementById('rangeType').value;
+      const isCustom = type === 'custom';
+      document.getElementById('singleDateWrap').style.display = isCustom ? 'none' : 'block';
+      document.getElementById('startDateWrap').style.display = isCustom ? 'block' : 'none';
+      document.getElementById('endDateWrap').style.display = isCustom ? 'block' : 'none';
+    }
+
+    function setQuickRange(type) {
+      document.getElementById('rangeType').value = type;
+      toggleDateRange();
+      document.getElementById('singleDate').value = getToday();
+      renderDashboard();
+    }
+
+    function getStartOfWeek(date) {
+      const temp = new Date(date);
+      const day = temp.getDay();
+      const diff = temp.getDate() - day + (day === 0 ? -6 : 1);
+      return new Date(temp.setDate(diff));
+    }
+
+    function inRange(itemDate, rangeType, singleDate, startDate, endDate) {
+      const visit = new Date(itemDate + 'T00:00:00');
+
+      if (rangeType === 'day') {
+        return itemDate === singleDate;
+      }
+
+      if (rangeType === 'week') {
+        const selected = new Date(singleDate + 'T00:00:00');
+        const weekStart = getStartOfWeek(selected);
+        const weekEnd = new Date(weekStart);
+        weekEnd.setDate(weekEnd.getDate() + 6);
+        return visit >= weekStart && visit <= weekEnd;
+      }
+
+      if (rangeType === 'custom') {
+        return itemDate >= startDate && itemDate <= endDate;
+      }
+
+      return true;
+    }
+
+    function renderDashboard() {
+      const rangeType = document.getElementById('rangeType').value;
+      const singleDate = document.getElementById('singleDate').value || getToday();
+      const startDate = document.getElementById('startDate').value || getToday();
+      const endDate = document.getElementById('endDate').value || getToday();
+      const filterReason = document.getElementById('filterReason').value;
+      const filterCollege = document.getElementById('filterCollege').value;
+      const filterEmployee = document.getElementById('filterEmployee').value;
+
+      const filtered = visitorData.filter(item => {
+        const matchesDate = inRange(item.date, rangeType, singleDate, startDate, endDate);
+        const matchesReason = filterReason === 'all' || item.reason === filterReason;
+        const matchesCollege = filterCollege === 'all' || item.college === filterCollege;
+        const matchesEmployee = filterEmployee === 'all' || item.employee === filterEmployee;
+        return matchesDate && matchesReason && matchesCollege && matchesEmployee;
+      });
+
+      document.getElementById('totalVisitors').textContent = filtered.length;
+      document.getElementById('studentVisitors').textContent = filtered.filter(item => item.employee === 'No').length;
+      document.getElementById('teacherVisitors').textContent = filtered.filter(item => item.employee === 'Teacher').length;
+      document.getElementById('staffVisitors').textContent = filtered.filter(item => item.employee === 'Staff').length;
+
+      renderBarChart(filtered, rangeType, singleDate, startDate, endDate);
+      renderTopBreakdown(filtered);
+      renderRecentLogs(filtered);
+    }
+
+    function renderBarChart(filtered, rangeType, singleDate, startDate, endDate) {
+      const chart = document.getElementById('barChart');
+      chart.innerHTML = '';
+
+      let buckets = [];
+
+      if (rangeType === 'day') {
+        const reasons = ['Study', 'Research', 'Borrow Books', 'Return Books', 'Computer Use'];
+        buckets = reasons.map(reason => ({
+          label: reason,
+          value: filtered.filter(item => item.reason === reason).length
+        }));
+      } else {
+        const grouped = {};
+        filtered.forEach(item => {
+          grouped[item.date] = (grouped[item.date] || 0) + 1;
+        });
+        buckets = Object.keys(grouped).sort().map(date => ({ label: date.slice(5), value: grouped[date] }));
+        if (!buckets.length) {
+          const fallback = rangeType === 'custom' ? [startDate, endDate] : [singleDate];
+          buckets = fallback.map(date => ({ label: date.slice(5), value: 0 }));
+        }
+      }
+
+      const max = Math.max(...buckets.map(b => b.value), 1);
+      buckets.forEach((bucket, index) => {
+        const wrap = document.createElement('div');
+        wrap.className = 'bar-wrap';
+
+        const bar = document.createElement('div');
+        bar.className = 'bar' + (index % 2 ? ' alt' : '');
+        bar.style.height = Math.max((bucket.value / max) * 190, 10) + 'px';
+        bar.innerHTML = `<strong>${bucket.value}</strong>`;
+
+        const label = document.createElement('span');
+        label.textContent = bucket.label;
+
+        wrap.appendChild(bar);
+        wrap.appendChild(label);
+        chart.appendChild(wrap);
+      });
+    }
+
+    function renderTopBreakdown(filtered) {
+      const target = document.getElementById('topBreakdown');
+      target.innerHTML = '';
+
+      const reasonCounts = countBy(filtered, 'reason');
+      const collegeCounts = countBy(filtered, 'college');
+      const topReason = getTopEntry(reasonCounts, 'No reason yet');
+      const topCollege = getTopEntry(collegeCounts, 'No course yet');
+      const teacherCount = filtered.filter(item => item.employee === 'Teacher').length;
+      const staffCount = filtered.filter(item => item.employee === 'Staff').length;
+
+      const items = [
+        { title: 'Top Reason', value: `${topReason.key} (${topReason.value})`, badge: 'Reason', badgeClass: 'primary' },
+        { title: 'Top Course', value: `${topCollege.key} (${topCollege.value})`, badge: 'Course', badgeClass: 'success' },
+        { title: 'Employees', value: `${teacherCount + staffCount} total`, badge: 'Teacher/Staff', badgeClass: 'warning' }
+      ];
+
+      items.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'mini-item';
+        div.innerHTML = `
+          <div>
+            <div style="font-weight:700; margin-bottom:4px;">${item.title}</div>
+            <div class="muted">${item.value}</div>
+          </div>
+          <span class="badge ${item.badgeClass}">${item.badge}</span>
+        `;
+        target.appendChild(div);
+      });
+    }
+
+    function renderRecentLogs(filtered) {
+      const target = document.getElementById('recentLogsList');
+      target.innerHTML = '';
+
+      const logs = filtered.slice(-5).reverse();
+      if (!logs.length) {
+        const empty = document.createElement('div');
+        empty.className = 'mini-item';
+        empty.innerHTML = '<div><strong>No logs found</strong><br><span class="muted">Try another filter.</span></div>';
+        target.appendChild(empty);
+        return;
+      }
+
+      logs.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'mini-item';
+        div.innerHTML = `
+          <div>
+            <strong>${item.date} - ${item.time || 'N/A'}</strong><br>
+            <span class="muted">${item.name || 'No Name'}</span><br>
+            <span class="muted">${item.email || 'No Email'}</span><br>
+            <span class="muted">${item.reason} • ${item.college}</span>
+          </div>
+          <span class="badge primary">${item.employee}</span>
+        `;
+        target.appendChild(div);
+      });
+    }
+
+    function countBy(items, key) {
+      return items.reduce((acc, item) => {
+        acc[item[key]] = (acc[item[key]] || 0) + 1;
+        return acc;
+      }, {});
+    }
+
+    function getTopEntry(obj, fallback) {
+      const entries = Object.entries(obj);
+      if (!entries.length) return { key: fallback, value: 0 };
+      const top = entries.sort((a, b) => b[1] - a[1])[0];
+      return { key: top[0], value: top[1] };
+    }
+
+    function resetFilters() {
+      document.getElementById('rangeType').value = 'day';
+      document.getElementById('filterReason').value = 'all';
+      document.getElementById('filterCollege').value = 'all';
+      document.getElementById('filterEmployee').value = 'all';
+      setDefaultDates();
+      toggleDateRange();
+      renderDashboard();
+    }
+
+    setDefaultDates();
+    toggleDateRange();
+    renderDashboard();
+  </script>
+</body>
+</html>
